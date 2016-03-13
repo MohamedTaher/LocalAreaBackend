@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import sun.net.www.protocol.mailto.MailToURLConnection;
+
 import com.mysql.jdbc.Statement;
 
 public class UserModel {
@@ -170,8 +172,28 @@ public class UserModel {
 	}
 	
 	
-	public static String follow(Integer followerID, Integer followedID) {
+	private static Integer emailToID(String email) {
 		try {
+			Connection con = DBConnection.getActiveConnection();
+			String sql = "select id from users where email=?";
+			PreparedStatement stmt;
+			stmt = con.prepareStatement(sql);
+			stmt.setString(1, email);
+			ResultSet rs = stmt.executeQuery();
+			if(rs.next()) {
+				return Integer.parseInt(rs.getString("id"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	
+	public static String follow(Integer followerID, String followedEmail) {
+		try {
+			Integer followedID = emailToID(followedEmail);
 			Connection con = DBConnection.getActiveConnection();
 			String sql = "INSERT INTO follow VALUES(?, ?);";
 			PreparedStatement stmt = con.prepareStatement(sql);
@@ -188,6 +210,26 @@ public class UserModel {
 			return "SQL Error";
 		}
 	}
+	
+	
+//	public static String follow(Integer followerID, Integer followedID) {
+//		try {
+//			Connection con = DBConnection.getActiveConnection();
+//			String sql = "INSERT INTO follow VALUES(?, ?);";
+//			PreparedStatement stmt = con.prepareStatement(sql);
+//			stmt.setInt(1, followerID);
+//			stmt.setInt(2, followedID);
+//			ResultSet rs = stmt.executeQuery();
+//			if(rs.next()) {
+//				return "OK";
+//			} else {
+//				return "NO";
+//			}
+//		} catch(SQLException e) {
+//			e.printStackTrace();
+//			return "SQL Error";
+//		}
+//	}
 
 
 }
