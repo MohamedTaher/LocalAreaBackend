@@ -17,6 +17,7 @@ public class UserModel {
 	private Double lat;
 	private Double lon;
 	
+	
 	public String getPass(){
 		return pass;
 	}
@@ -166,6 +167,26 @@ public class UserModel {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	
+	public static String follow(Integer followerID, Integer followedID) {
+		try {
+			Connection con = DBConnection.getActiveConnection();
+			String sql = "INSERT INTO follow VALUES(?, ?);";
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setInt(1, followerID);
+			stmt.setInt(2, followedID);
+			ResultSet rs = stmt.executeQuery();
+			if(rs.next()) {
+				return "OK";
+			} else {
+				return "NO";
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return "SQL Error";
+		}
 	}
 
 
