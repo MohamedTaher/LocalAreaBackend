@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import sun.net.www.protocol.mailto.MailToURLConnection;
 
@@ -210,6 +211,31 @@ public class UserModel {
 			return "SQL Error";
 		}
 	}
+
+        public static ArrayList<UserModel> Getfollowers(String id) {
+		ArrayList<UserModel> follwers=new ArrayList<UserModel>();
+		try {
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "Select * from follow where `followed` = ?";///
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, id);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				UserModel user = new UserModel();
+				user.id = rs.getInt(1);
+				//user.email = rs.getString("email");
+				follwers.add(user);
+				
+			}
+			return follwers;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	
 	
 //	public static String follow(Integer followerID, Integer followedID) {
