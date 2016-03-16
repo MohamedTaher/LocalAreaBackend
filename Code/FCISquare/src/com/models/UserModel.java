@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import sun.net.www.protocol.mailto.MailToURLConnection;
-
 import com.mysql.jdbc.Statement;
 
 public class UserModel {
@@ -19,7 +17,6 @@ public class UserModel {
 	private Integer id;
 	private Double lat;
 	private Double lon;
-	
 	
 	public String getPass(){
 		return pass;
@@ -172,16 +169,17 @@ public class UserModel {
 		return null;
 	}
 	
-	
 	private static Integer emailToID(String email) {
 		try {
 			Connection con = DBConnection.getActiveConnection();
-			String sql = "select id from users where email=?";
+			String sql = "select id from users where email=?;";
 			PreparedStatement stmt;
 			stmt = con.prepareStatement(sql);
 			stmt.setString(1, email);
+			//System.out.println(stmt.toString());
 			ResultSet rs = stmt.executeQuery();
 			if(rs.next()) {
+				//System.out.println(rs.getString("id"));
 				return Integer.parseInt(rs.getString("id"));
 			}
 		} catch (SQLException e) {
@@ -190,29 +188,107 @@ public class UserModel {
 		}
 		return 0;
 	}
-	
+	/*
+	public static String follow(Integer followerID, String followedEmail) {
+		try {
+			Integer followedID = emailToID(followedEmail);
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "Insert into follow VALUES  (?, ?)";
+
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			stmt.setString(1, followerID.toString());
+			stmt.setString(2, followedID.toString());
+			stmt.executeUpdate();
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (rs.next()) {
+				return "Done";
+			}
+			return null;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}*/
+	/*
+	public static String unfollow(Integer followerID, String followedEmail) {
+		try {
+			Integer followedID = emailToID(followedEmail);
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "DELETE FROM follow where follower = ? and followedID = ?;";
+
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			stmt.setString(1, followerID.toString());
+			stmt.setString(2, followedID.toString());
+			stmt.executeUpdate();
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (rs.next()) {
+				return "Done";
+			}
+			return null;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}*/
 	
 	public static String follow(Integer followerID, String followedEmail) {
 		try {
 			Integer followedID = emailToID(followedEmail);
 			Connection con = DBConnection.getActiveConnection();
-			String sql = "INSERT INTO follow VALUES(?, ?);";
+			String sql = "INSERT INTO follow VALUES(" + followerID + ", " + followedID + ");";
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setInt(1, followerID);
-			stmt.setInt(2, followedID);
-			ResultSet rs = stmt.executeQuery();
-			if(rs.next()) {
+//			stmt.setInt(1, (int)followerID);
+//			stmt.setInt(2, (int)followedID);
+			System.out.println(stmt.toString());
+			int state = stmt.executeUpdate(sql);
+			System.out.println("state " + state);
+//			ResultSet rs = stmt.executeQuery();
+//			System.out.println(rs.toString());
+			if(state != 0) {
 				return "OK";
 			} else {
 				return "NO";
 			}
 		} catch(SQLException e) {
 			e.printStackTrace();
+//			Integer followedID = emailToID(followedEmail);
+//			System.out.println(followedID  + " " + followedEmail);
 			return "SQL Error";
 		}
 	}
-
-        public static ArrayList<UserModel> Getfollowers(String id) {
+	
+	public static String unfollow(Integer followerID, String followedEmail) {
+		try {
+			Integer followedID = emailToID(followedEmail);
+			Connection con = DBConnection.getActiveConnection();
+			//DELETE FROM follow where follower = ? and followedID = ?;
+			String sql = "DELETE FROM follow WHERE follower = " + followerID + " and followed = " + followedID + ";";
+			PreparedStatement stmt = con.prepareStatement(sql);
+//			stmt.setInt(1, (int)followerID);
+//			stmt.setInt(2, (int)followedID);
+			System.out.println(stmt.toString());
+			int state = stmt.executeUpdate(sql);
+			System.out.println("state " + state);
+//			ResultSet rs = stmt.executeQuery();
+//			System.out.println(rs.toString());
+			if(state != 0) {
+				return "OK";
+			} else {
+				return "NO";
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+//			Integer followedID = emailToID(followedEmail);
+//			System.out.println(followedID  + " " + followedEmail);
+			return "SQL Error";
+		}
+	}
+	
+	public static ArrayList<UserModel> Getfollowers(String id) {
 		ArrayList<UserModel> follwers=new ArrayList<UserModel>();
 		try {
 			Connection conn = DBConnection.getActiveConnection();
@@ -238,6 +314,7 @@ public class UserModel {
 
 	
 	
+	
 //	public static String follow(Integer followerID, Integer followedID) {
 //		try {
 //			Connection con = DBConnection.getActiveConnection();
@@ -256,6 +333,9 @@ public class UserModel {
 //			return "SQL Error";
 //		}
 //	}
+
+
+
 
 
 }

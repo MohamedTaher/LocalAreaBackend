@@ -75,6 +75,27 @@ public class Services {
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
 	}
+	
+	@POST
+	@Path("/getUserLastPosition")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getUserLastPosition(@FormParam("email") String email) {
+		UserModel user = UserModel.getPosition(email);
+		JSONObject json = new JSONObject();
+		json.put("lat", user.getLat());
+		json.put("long", user.getLon());
+		return json.toJSONString();
+	}
+
+	@GET
+	@Path("/")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getJson() {
+		return "Hello after editing";
+		// Connection URL:
+		// mysql://$OPENSHIFT_MYSQL_DB_HOST:$OPENSHIFT_MYSQL_DB_PORT/
+	}
+	
 	@POST
 	@Path("/followUser")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -84,6 +105,17 @@ public class Services {
 		obj.put("status", status);
 		return obj.toJSONString();
 	}
+	
+	@POST
+	@Path("/unfollowUser")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String unfollowUser(@FormParam("followerID") String followerID, @FormParam("followedEmail") String followedEmail) {
+		String status = UserModel.unfollow(Integer.parseInt(followerID), followedEmail);
+		JSONObject obj = new JSONObject();
+		obj.put("status", status);
+		return obj.toJSONString();
+	}
+	
 	@POST
 	@Path("/getfollwers")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -94,20 +126,9 @@ public class Services {
 		JSONObject jso =new JSONObject();
 		jsonn.add(jso);
 		jsonn.get(i).put("id", user.get(i).getId());
-		//json.put("name", user.get(i).getName());
-		//json.put("email", user.get(i).getEmail());;
 		}
 		JSONObject js=new JSONObject();
 		js.put("list", jsonn);
 		return js.toJSONString();
-	}
-
-	@GET
-	@Path("/")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String getJson() {
-		return "Hello after editing";
-		// Connection URL:
-		// mysql://$OPENSHIFT_MYSQL_DB_HOST:$OPENSHIFT_MYSQL_DB_PORT/
 	}
 }
