@@ -75,6 +75,21 @@ public class Services {
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
 	}
+	
+	
+	
+	@POST
+	@Path("/getUserLastPosition")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getUserLastPosition(@FormParam("email") String email) {
+		UserModel user = UserModel.getPosition(email);
+		JSONObject json = new JSONObject();
+		json.put("lat", user.getLat());
+		json.put("long", user.getLon());
+		return json.toJSONString();
+	}
+	
+	
 	@POST
 	@Path("/followUser")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -84,6 +99,20 @@ public class Services {
 		obj.put("status", status);
 		return obj.toJSONString();
 	}
+	
+	
+	@POST
+	@Path("/unfollowUser")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String unfollowUser(@FormParam("followerID") String followerID, @FormParam("followedEmail") String followedEmail) {
+		String status = UserModel.unfollow(Integer.parseInt(followerID), followedEmail);
+		JSONObject obj = new JSONObject();
+		obj.put("status", status);
+		return obj.toJSONString();
+	}
+	
+	
+	
 	@POST
 	@Path("/getfollwers")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -101,6 +130,65 @@ public class Services {
 		js.put("list", jsonn);
 		return js.toJSONString();
 	}
+	/*@POST
+	@Path("/addfriend")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String addFriend(@FormParam("IDf")String fromid,
+			@FormParam("IDt")String toid){
+		String status=UserModel.addFriend(fromid,toid);
+		JSONObject jso =new JSONObject();
+		jso.put("status", status);
+		return jso.toJSONString();
+		
+	}*/
+	/*@POST
+	@Path("/accept")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String add(@FormParam("uID")int userId,
+			@FormParam("rID")int reqFromID){
+		String status=UserModel.accept(userId,reqFromID);
+		JSONObject jso =new JSONObject();
+		jso.put("status", status);
+		return jso.toJSONString();
+		
+	}*/
+	
+	@POST
+	@Path("/search")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String search(@FormParam("id")int id){
+		UserModel user=UserModel.search(id);
+		JSONObject json = new JSONObject();
+		json.put("name", user.getName());
+		json.put("email", user.getEmail());
+		json.put("lat", user.getLat());
+		json.put("long", user.getLon());
+		System.out.println("DONE\n\n\n");
+		return json.toJSONString();
+		
+		
+	}
+	@POST
+	@Path("/getuserbyname")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String ayhaga(@FormParam("name") String name) {
+		ArrayList<UserModel> user = UserModel.searchByName(name);	
+		ArrayList<JSONObject> jsonn = new ArrayList<JSONObject>();
+		for(int i=0;i<user.size();i++){
+		JSONObject jso =new JSONObject();
+		jsonn.add(jso);
+		jsonn.get(i).put("id", user.get(i).getId());
+		jsonn.get(i).put("name", user.get(i).getName());
+		jsonn.get(i).put("email", user.get(i).getEmail());
+		jsonn.get(i).put("lat", user.get(i).getLat());
+		jsonn.get(i).put("long", user.get(i).getLon());
+		
+		}
+		JSONObject js=new JSONObject();
+		js.put("list", jsonn);
+		return js.toJSONString();
+	}
+	
 
 	@GET
 	@Path("/")
