@@ -56,12 +56,14 @@ public class Services {
 			@FormParam("pass") String pass) {
 		UserModel user = UserModel.login(email, pass);
 		JSONObject json = new JSONObject();
-		json.put("id", user.getId());
-		json.put("name", user.getName());
-		json.put("email", user.getEmail());
-		json.put("pass", user.getPass());
-		json.put("lat", user.getLat());
-		json.put("long", user.getLon());
+		if(user != null) {
+			json.put("id", user.getId());
+			json.put("name", user.getName());
+			json.put("email", user.getEmail());
+			json.put("pass", user.getPass());
+			json.put("lat", user.getLat());
+			json.put("long", user.getLon());
+		}
 		return json.toJSONString();
 	}
 	
@@ -130,6 +132,29 @@ public class Services {
 		js.put("list", jsonn);
 		return js.toJSONString();
 	}
+	
+	
+	
+//	@POST
+//	@Path("/getmyfollwers")
+//	@Produces(MediaType.TEXT_PLAIN)
+//	public String getmyfollwers(@FormParam("ID") String id) {
+//		ArrayList<UserModel> user = UserModel.Getfollowers(id);	
+//		ArrayList<JSONObject> jsonn = new ArrayList<JSONObject>();
+//		for(int i=0;i<user.size();i++){
+//		JSONObject jso =new JSONObject();
+//		jsonn.add(jso);
+//		jsonn.get(i).put("id", user.get(i).getId());
+//		//json.put("name", user.get(i).getName());
+//		//json.put("email", user.get(i).getEmail());;
+//		}
+//		JSONObject js=new JSONObject();
+//		js.put("list", jsonn);
+//		return js.toJSONString();
+//	}
+	
+	
+	
 	/*@POST
 	@Path("/addfriend")
 	@Produces(MediaType.TEXT_PLAIN)

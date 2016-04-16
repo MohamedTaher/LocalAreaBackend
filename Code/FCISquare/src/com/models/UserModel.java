@@ -173,6 +173,7 @@ public class UserModel {
 		}
 		return null;
 	}
+
 	
 	
 	private static Integer emailToID(String email) {
@@ -267,6 +268,32 @@ public class UserModel {
 		}
 		return null;
 	}
+        
+//    public static ArrayList<UserModel> Getmyfollowers(String id) {
+//		ArrayList<UserModel> follwers=new ArrayList<UserModel>();
+//		try {
+//			Connection conn = DBConnection.getActiveConnection();
+//			String sql = "Select * from follow where `follower` = "+id;///
+//			PreparedStatement stmt;
+//			stmt = conn.prepareStatement(sql);
+////			stmt.setString(1, id);
+//			ResultSet rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				UserModel user = new UserModel();
+//				user.id = rs.getInt(1);
+//				//user.email = rs.getString("email");
+//				follwers.add(user);
+//				
+//			}
+//			return follwers;
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
+        
+    
 
 
 	
