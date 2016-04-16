@@ -272,17 +272,15 @@ public class UserModel {
 		ArrayList<UserModel> follwers = new ArrayList<UserModel>();
 		try {
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "Select * from follow where followed = " + id + ";";// /
+			String sql = "Select * from follow where `followed` = ?";// /
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql);
-			// stmt.setString(1, id);
-			ResultSet rs = stmt.executeQuery(sql);
+			stmt.setString(1, id);
+			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
-
 				UserModel user = new UserModel();
-
-				user.id = rs.getInt("follower");
-
+				user.id = rs.getInt(1);
+				// user.email = rs.getString("email");
 				follwers.add(user);
 
 			}
@@ -290,9 +288,8 @@ public class UserModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
 		}
-
+		return null;
 	}
 
 	// public static String follow(Integer followerID, Integer followedID) {
@@ -370,26 +367,5 @@ public class UserModel {
 		}
 		// return null;
 	}
-
-	public static String checkFollow(int userID, int anotherID) {
-		try {
-			Connection conn = DBConnection.getActiveConnection();
-			String sql = "Select * from follow where follower=" + userID
-					+ " and followed=" + anotherID + ";";
-			PreparedStatement stmt;
-			stmt = conn.prepareStatement(sql);
-			// stmt.setString(1, name);
-			ResultSet rs = stmt.executeQuery(sql);
-			if (rs.next()) {
-				return "1";
-			} else
-				return "0";
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return "sql error";
-		}
-	}
-	
 
 }
