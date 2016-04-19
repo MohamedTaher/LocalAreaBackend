@@ -107,7 +107,7 @@ public class UserModel {
 	public static UserModel login(String email, String pass) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "Select * from users where `email` = ? and `password` = ?";
+			String sql = "Select * from users where email = ? and password = ?";
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, email);
@@ -134,7 +134,7 @@ public class UserModel {
 	public static boolean updateUserPosition(Integer id, Double lat, Double lon) {
 		try{
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "Update users set `lat` = ? , `long` = ? where `id` = ?";
+			String sql = "Update users set lat = ? , long = ? where id = ?";
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql);
 			stmt.setDouble(1, lat);
@@ -151,7 +151,7 @@ public class UserModel {
 	public static UserModel getPosition(String email) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "Select * from users where `email` ='" +email + "';";
+			String sql = "Select * from users where email ='" +email + "';";
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql);
 //			stmt.setString(1, email);
@@ -302,7 +302,7 @@ public class UserModel {
 	public static UserModel  search(int id){
 		try {
 			Connection conn = DBConnection.getActiveConnection();
-            String sql="Select * from users where `id`=" + id +";";
+            String sql="Select * from users where id=" + id +";";
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql);
 			//stmt.setString(1, id+"");
