@@ -122,8 +122,8 @@ public class PlaceModel {
 		String temp = "";
 		try {
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "Insert into places (name,description,lng,lat,userID,userNum,rateSum)"
-					+ "VALUES  ('"+name+"','"+description+"',"+lng+","+lat+","+userID+",0,0);";
+			String sql = "Insert into places (name,description,lng,lat,userID,userNum,rateSum,numberOfCheckins)"
+					+ "VALUES  ('"+name+"','"+description+"',"+lng+","+lat+","+userID+",0,0,0);";
 			temp += sql;
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql);
@@ -174,6 +174,21 @@ public class PlaceModel {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
 			String sql = "update places set rateSum = rateSum + " + rate +", userNum = userNum + 1 where id = "+id+";";
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.executeUpdate(sql);
+			return "Success";
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "Error";
+		}
+	}
+	
+	public static String  incrementCheckinNumber(int placeID){
+		try {
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "update places set numberOfCheckins = numberOfCheckins + 1 where id = "+placeID+";";
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql);
 			stmt.executeUpdate(sql);
