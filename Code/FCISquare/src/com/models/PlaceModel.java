@@ -122,8 +122,8 @@ public class PlaceModel {
 		String temp = "";
 		try {
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "Insert into places (name,description,lng,lat,userID,userNum,rateSum,numberOfCheckins)"
-					+ "VALUES  ('"+name+"','"+description+"',"+lng+","+lat+","+userID+",0,0,0);";
+			String sql = "Insert into places (name,description,lng,lat,userID)"
+					+ "VALUES  ('"+name+"','"+description+"',"+lng+","+lat+","+userID+");";
 			temp += sql;
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql);
