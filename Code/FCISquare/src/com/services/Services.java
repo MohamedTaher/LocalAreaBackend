@@ -5,8 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -20,14 +18,7 @@ import javax.ws.rs.core.Response;
 import org.glassfish.jersey.server.mvc.Viewable;
 import org.json.simple.JSONObject;
 
-import com.models.Checkin;
-import com.models.DBConnection;
-import com.models.PlaceModel;
-import com.models.Sort;
-import com.models.SortByCheckin;
-import com.models.SortByNearest;
-import com.models.SortByRate;
-import com.models.UserModel;
+import com.models.*;
 
 @Path("/")
 public class Services {
@@ -231,6 +222,27 @@ public class Services {
 		// Connection URL:
 		// mysql://$OPENSHIFT_MYSQL_DB_HOST:$OPENSHIFT_MYSQL_DB_PORT/
 	}
+	
+	@POST
+	@Path("/Comment")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String comment(@FormParam("uID") int userID,@FormParam("checkInID") int chID,@FormParam("desc") String desc){
+		String status=Comment.Do(userID, chID,desc);
+		JSONObject json=new JSONObject();
+		json.put("status", status);
+		return json.toJSONString();
+		
+	}
+	@POST
+	@Path("/Like")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String Like(@FormParam("uID") int userID,@FormParam("checkInID") int chID){
+		String status=Like.Do(userID, chID);
+		JSONObject json=new JSONObject();
+		json.put("status", status);
+		return json.toJSONString();
+		
+	}
 
 	@POST
 	@Path("/addPlace")
@@ -243,7 +255,9 @@ public class Services {
 				Double.parseDouble(lng), Double.parseDouble(lat),
 				Integer.parseInt(userID));
 
-		return state;
+		JSONObject json=new JSONObject();
+		json.put("status", state);
+		return json.toJSONString();
 	}
 
 	@POST
@@ -262,95 +276,35 @@ public class Services {
 			jsonn.get(i).put("lat", place.get(i).getLat());
 			jsonn.get(i).put("lng", place.get(i).getLng());
 			jsonn.get(i).put("userID", place.get(i).getUserID());
+			jsonn.get(i).put("userNum", place.get(i).getUserNum());
+			jsonn.get(i).put("rateSum", place.get(i).getRateSum());
 		}
 		JSONObject js = new JSONObject();
 		js.put("list", jsonn);
 		return js.toJSONString();
 	}
 	
-	
-	
-	/*
-	 * 
-	 * private int id;
-	private String name;
-	private String description;
-	private double lng, lat;
-	private int userID;
-	private int numberOfCheckins;
-	 */
-	
 	@POST
-	@Path("/getPlaceByID")
+	@Path("/createCheckin")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String getPlaceByID(@FormParam("placeID")int id) {
-		PlaceModel place = PlaceModel.getPlaceByID(id);
-		if(place == null)return "Error!";
-		JSONObject jplace = new JSONObject();
-		jplace.put("id", place.getId());
-		jplace.put("name", place.getName());
-		jplace.put("description", place.getDescription());
-		jplace.put("lng", place.getLng());
-		jplace.put("lat", place.getLat());
-		jplace.put("userID", place.getUserID());
-		jplace.put("numberOfCheckins", place.getNumberOfCheckins());
-		return jplace.toJSONString();
+	public String createCheckin(@FormParam("description") String description,
+			@FormParam("userID") String userID,
+			@FormParam("placeID") String placeID) {
+		String state = Checkin.createCheckin(description, Integer.parseInt(userID)
+				, Integer.parseInt(placeID));
+
+		JSONObject json=new JSONObject();
+		json.put("status", state);
+		return json.toJSONString();
 	}
 	
-	
-	
 	@POST
-	@Path("/getCheckinsFromUser")
+	@Path("/ratePlace")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String getCheckinsFromUser(@FormParam("userID")int id, @FormParam("type")int type) { 
-		Set<Integer>checkins = new HashSet<Integer>();
-		//get users checkins
-		ArrayList<Integer>ids = Checkin.getCheckinsByID(id);
-		for(int i = 0;i < ids.size();i++) {
-			checkins.add(ids.get(i));
-		}
-		System.out.println("DONE1 ");
-		//get followers checkins
-		ids = Checkin.getFollwersCheckins(id);
-		for(int i = 0;i < ids.size();i++) {
-			checkins.add(ids.get(i));
-		}
-		System.out.println("DONE2");
-		ArrayList<Checkin> ret = new ArrayList<Checkin>();
-		
-		for(Integer i : checkins) {
-			ret.add(Checkin.getCheckinByID(i));
-		}
-		System.out.println("DONE3");
-		//sort then return
-		Sort sorter = null;
-		if(type == 1) {
-			sorter = new SortByCheckin();
-		} else if(type == 2) {
-			sorter = new SortByRate();
-		} else {
-			sorter = new SortByNearest();
-		}
-		System.out.println("DONE4");
-		ArrayList<Checkin> sorted = Checkin.sortCheckins(ret, sorter);
-		System.out.println("FINAL");
-		JSONObject jcheckins = new JSONObject();
-		ArrayList<JSONObject> jarray = new ArrayList<JSONObject>();
-		for(int i = 0;i < sorted.size();i++) {
-			JSONObject jcheckin = new JSONObject();
-			Checkin checkintemp = sorted.get(i);
-			jcheckin.put("description", checkintemp.getDescription());
-			jcheckin.put("date", checkintemp.getDate());
-			jcheckin.put("placeID", checkintemp.getPlaceID());
-			jcheckin.put("userID", checkintemp.getUserID());
-			jcheckin.put("id", checkintemp.getId());
-			jcheckin.put("likes", checkintemp.getLikes());
-			jcheckin.put("comments", checkintemp.getComments());
-			jarray.add(jcheckin);
-		}
-		JSONObject jret = new JSONObject();
-		jret.put("checkins", jarray);
-		return jret.toJSONString();
+	public String ratePlace(@FormParam("id") String id,@FormParam("rate") String rate){
+		String state = PlaceModel.ratePlace(Integer.parseInt(rate), Integer.parseInt(id));
+		JSONObject json=new JSONObject();
+		json.put("status", state);
+		return json.toJSONString();
 	}
-	
 }
