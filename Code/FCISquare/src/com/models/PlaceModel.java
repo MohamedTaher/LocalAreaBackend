@@ -15,25 +15,15 @@ public class PlaceModel {
 	private double lng, lat;
 	private int userID;
 	private int numberOfCheckins;
-	private int rateSum;
 	private int userNum;
+	private int rateSum;
 	
-
-
-
-	
-
-
-
 	public PlaceModel(String name, String description, double lng, double lat) {
 		super();
 		this.name = name;
 		this.description = description;
 		this.lng = lng;
 		this.lat = lat;
-		this.rateSum=0;
-		this.userNum=0;
-		this.numberOfCheckins=0;
 	}
 	
 	
@@ -43,26 +33,6 @@ public class PlaceModel {
 	}
 
 
-	public int getRateSum() {
-		return rateSum;
-	}
-
-
-
-	public void setRateSum(int rateSum) {
-		this.rateSum = rateSum;
-	}
-
-
-
-	public int getUserNum() {
-		return userNum;
-	}
-	
-	
-	public void setUserNum(int userNum) {
-		this.userNum = userNum;
-	}
 
 	public int getId() {
 		return id;
@@ -186,8 +156,9 @@ public class PlaceModel {
 				place.lat = rs.getDouble("lat");
 				place.userID = rs.getInt("userID");
 				place.numberOfCheckins = rs.getInt("numberOfCheckins");
-				place.rateSum = rs.getInt("rateSum");
-				place.userNum = rs.getInt("userNum");
+				place.setUserNum(rs.getInt("userNum"));
+				place.setRateSum(rs.getInt("rateSum"));
+				
 				places.add(place);
 				
 			}
@@ -199,45 +170,10 @@ public class PlaceModel {
 		}
 	}
 	
-	public void ratePlace(int rate)
-	{
-		
-	}
-
-
-
-	public static PlaceModel getPlaceByID(int id) {
-		try {
-			PlaceModel place = new PlaceModel();
-			Connection con = DBConnection.getActiveConnection();
-			String sql = "select * from places where id=" + id +";";
-//			System.out.println(sql);
-			PreparedStatement stmt;
-			stmt = con.prepareStatement(sql);
-			ResultSet rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				place.id = rs.getInt("id");
-				place.name=rs.getString("name");
-				place.description=rs.getString("description");
-				place.lng = rs.getDouble("lng");
-				place.lat = rs.getDouble("lat");
-				place.userID = rs.getInt("userID");
-				place.numberOfCheckins = rs.getInt("numberOfCheckins");
-				place.rateSum = rs.getInt("rateSum");
-				place.userNum = rs.getInt("userNum");
-			}
-			return place;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	public static String  incrementCheckinNumber(int placeID){
+	public static String ratePlace(int rate, int id) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "update places set numberOfCheckins = numberOfCheckins + 1 where id = "+placeID+";";
+			String sql = "update places set rateSum = rateSum + " + rate +", userNum = userNum + 1 where id = "+id+";";
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql);
 			stmt.executeUpdate(sql);
@@ -264,4 +200,29 @@ public class PlaceModel {
 		}
 	}
 
+
+
+	public int getUserNum() {
+		return userNum;
+	}
+
+
+
+	public void setUserNum(int userNum) {
+		this.userNum = userNum;
+	}
+
+
+
+	public int getRateSum() {
+		return rateSum;
+	}
+
+
+
+	public void setRateSum(int rateSum) {
+		this.rateSum = rateSum;
+	}
+	
+	
 }
