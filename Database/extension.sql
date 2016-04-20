@@ -106,3 +106,9 @@ insert into checkins(description, userID, placeID, likes, comments) values("kche
 insert into checkins(description, userID, placeID, likes, comments) values("kcheckin4", 101, 444, 1, 2);
 insert into checkins(description, userID, placeID, likes, comments) values("kcheckin5", 101, 222, 1, 2);
 insert into checkins(description, userID, placeID, likes, comments) values("kcheckin6", 101, 111, 1, 2);
+insert into users(id, name, email, password, lat, users.long) values(102, "meerak", "merrak", "krkr", 12, 13);
+insert into users(id, name, email, password, lat, users.long) values(103, "2meerak", "2merrak", "2krkr", 12, 13);
+insert into follow(follower, followed) values(101, 102);
+insert into follow(follower, followed) values(101, 103);
+insert into checkins(description, userID, placeID, likes, comments) values("kcheckin6", 102, 111, 1, 2);
+insert into checkins(description, userID, placeID, likes, comments) values("kcheckin6", 103, 111, 1, 2);
