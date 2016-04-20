@@ -176,7 +176,7 @@ public class UserModel {
 
 	
 	
-	private static Integer emailToID(String email) {
+	public static Integer emailToID(String email) {
 		try {
 			Connection con = DBConnection.getActiveConnection();
 			String sql = "select id from users where email='" + email+"';";
