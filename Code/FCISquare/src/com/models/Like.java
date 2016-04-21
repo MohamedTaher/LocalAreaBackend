@@ -47,10 +47,10 @@ public static String Do(int userID,int CheckinID){
 	}
 	return "done";
 }
-public static String UnDo(int userID,int CheckinID){
+public static String Undo(int userID,int CheckinID){
 	try {
 		Connection con = DBConnection.getActiveConnection();
-		String sql = "DELETE FROM likeModels WHERE userID = " + userID + " and checkinID = " + CheckinID + ";";
+		String sql = "DELETE FROM likes WHERE userID = " + userID + " and checkinID = " + CheckinID + ";";
 		PreparedStatement stmt = con.prepareStatement(sql);
 		//stmt.setInt(1, userID);
 		//stmt.setInt(2, CheckinID);

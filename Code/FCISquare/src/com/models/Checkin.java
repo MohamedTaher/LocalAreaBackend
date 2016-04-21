@@ -186,4 +186,23 @@ public class Checkin {
 		return sorter.sort(checkins);
 	}
 	
+	
+	public static String createCheckin(String description,int userID, int placeID){
+		String temp = "";
+		try {
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "Insert into checkins (description,userID,placeID,likes)"
+					+ "VALUES  ('"+description+"',"+userID+","+placeID+",0);";
+			temp += sql;
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.executeUpdate(sql);
+			return "Success";
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "SQL ERROR !!\n" + temp;
+		}
+	}
+	
 }

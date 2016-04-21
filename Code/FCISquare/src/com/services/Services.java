@@ -20,14 +20,7 @@ import javax.ws.rs.core.Response;
 import org.glassfish.jersey.server.mvc.Viewable;
 import org.json.simple.JSONObject;
 
-import com.models.Checkin;
-import com.models.DBConnection;
-import com.models.PlaceModel;
-import com.models.Sort;
-import com.models.SortByCheckin;
-import com.models.SortByNearest;
-import com.models.SortByRate;
-import com.models.UserModel;
+import com.models.*;
 
 @Path("/")
 public class Services {
@@ -351,6 +344,66 @@ public class Services {
 		JSONObject jret = new JSONObject();
 		jret.put("checkins", jarray);
 		return jret.toJSONString();
+	}
+	
+	
+	@POST
+	@Path("/createCheckin")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String createCheckin(@FormParam("description") String description,
+			@FormParam("userID") String userID,
+			@FormParam("placeID") String placeID) {
+		String state = Checkin.createCheckin(description, Integer.parseInt(userID)
+				, Integer.parseInt(placeID));
+
+		JSONObject json=new JSONObject();
+		json.put("status", state);
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/ratePlace")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String ratePlace(@FormParam("id") String id,@FormParam("rate") String rate){
+		String state = PlaceModel.ratePlace(Integer.parseInt(rate), Integer.parseInt(id));
+		JSONObject json=new JSONObject();
+		json.put("status", state);
+		return json.toJSONString();
+	}
+	
+	
+	@POST
+	@Path("/Comment")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String comment(@FormParam("uID") int userID,@FormParam("checkInID") int chID,@FormParam("desc") String desc){
+		String status=Comment.Do(userID, chID,desc);
+		JSONObject json=new JSONObject();
+		json.put("status", status);
+		return json.toJSONString();
+		
+	}
+	
+	@POST
+	@Path("/Like")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String Like(@FormParam("uID") int userID,@FormParam("checkInID") int chID){
+		String status=Like.Do(userID, chID);
+		JSONObject json=new JSONObject();
+		json.put("status", status);
+		return json.toJSONString();
+		
+	}
+	
+	
+	@POST
+	@Path("/UnLike")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String UnLike(@FormParam("uID") int userID,@FormParam("checkInID") int chID){
+		String status=Like.Undo(userID, chID);
+		JSONObject json=new JSONObject();
+		json.put("status", status);
+		return json.toJSONString();
+		
 	}
 	
 }
