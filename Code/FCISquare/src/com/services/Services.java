@@ -329,6 +329,14 @@ public class Services {
 		System.out.println("FINAL");
 		JSONObject jcheckins = new JSONObject();
 		ArrayList<JSONObject> jarray = new ArrayList<JSONObject>();
+//		private int id;
+//		private String name;
+//		private String description;
+//		private double lng, lat;
+//		private int userID;
+//		private int numberOfCheckins;
+//		private int rateSum;
+//		private int userNum;
 		for(int i = 0;i < sorted.size();i++) {
 			JSONObject jcheckin = new JSONObject();
 			Checkin checkintemp = sorted.get(i);
@@ -339,6 +347,17 @@ public class Services {
 			jcheckin.put("id", checkintemp.getId());
 			jcheckin.put("likes", checkintemp.getLikes());
 			jcheckin.put("comments", checkintemp.getComments());
+			jcheckin.put("pid", checkintemp.getCheckinPlace().getId());
+			jcheckin.put("pname", checkintemp.getCheckinPlace().getName());
+			jcheckin.put("pdescription", checkintemp.getCheckinPlace().getDescription());
+			jcheckin.put("plng", checkintemp.getCheckinPlace().getLng());
+			jcheckin.put("plat", checkintemp.getCheckinPlace().getLat());
+			jcheckin.put("puserid", checkintemp.getCheckinPlace().getUserID());
+			jcheckin.put("pnumberofcheckins", checkintemp.getCheckinPlace().getNumberOfCheckins());
+			jcheckin.put("prateSum", checkintemp.getCheckinPlace().getRateSum());
+			jcheckin.put("pusernum", checkintemp.getCheckinPlace().getUserNum());
+			UserModel user = UserModel.search(checkintemp.getUserID());
+			jcheckin.put("uname", user.getName());
 			jarray.add(jcheckin);
 		}
 		JSONObject jret = new JSONObject();
