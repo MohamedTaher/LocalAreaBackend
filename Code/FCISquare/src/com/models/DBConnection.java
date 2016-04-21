@@ -16,10 +16,12 @@ public class DBConnection {
 			connection = DriverManager
 					.getConnection("jdbc:mysql://127.8.100.2:3306/se2firstapp?"
 							+ "user=adminYKFs38v&password=QG9RmdNVFgmc&characterEncoding=utf8");*/
-			
+			/*connection = DriverManager.getConnection("jdbc:mysql://127.10.183.2:3306/wep?"
+					+ "user=adminsTycGbN&password=HRA9uN57DX_8&characterEncoding=utf8");*/
 			connection = DriverManager
 					.getConnection("jdbc:mysql://localhost:3306/localArea?"
-							+ "user=root&password=root");/*
+							+ "user=root");
+			/*
 			connection = DriverManager.getConnection("jdbc:mysql://127.10.183.2:3306/wep?"
 					+ "user=adminsTycGbN&password=HRA9uN57DX_8&characterEncoding=utf8");*/
 			
