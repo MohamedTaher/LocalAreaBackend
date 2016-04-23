@@ -4,26 +4,48 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import com.mysql.jdbc.Statement;
 
 public class Comment {
 	int checkInID;
 	int userID;
+	int id;
 	String desc;
+	String userName;
+
 	
 	
+	public int getUserID() {
+		return userID;
+	}
+	public void setUserID(int userID) {
+		this.userID = userID;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	public void setCheckInID(int CheckInID){
 		this.checkInID=CheckInID;
-	}
-	public void setuserID(int userID){
-		this.userID=userID;
 	}
 	public int getCheckInID(){
 		return this.checkInID;
 	}
-	public int getuserID(){
-		return this.userID;
+	public String getDesc() {
+		return desc;
+	}
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	
 	public static String Do(int userID,int CheckinID,String desc){
@@ -75,6 +97,35 @@ public class Comment {
 			return "SQL error";
 		}
 		//return null;
+	}
+	
+	
+	
+	public static ArrayList<Comment> getComments(int checkinId){
+		ArrayList<Comment> comments=new ArrayList<Comment>();
+		try {
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "Select * from comments, users where `checkinID` = "+checkinId+" and users.id=userID;";
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				 Comment comment = new Comment();
+				 comment.setDesc(rs.getString("description"));
+				 comment.setCheckInID(rs.getInt("id"));
+				 comment.setUserID(rs.getInt("userID"));
+				 comment.setUserName(rs.getString("name"));
+				 comments.add(comment);
+			}
+			return comments;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	
+	
+	
 	}
 
 }

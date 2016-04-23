@@ -425,4 +425,29 @@ public class Services {
 		
 	}
 	
+	
+	@POST
+	@Path("/getCommentsForCheckin")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getcomments(@FormParam("checkinID") int id) {
+		ArrayList<Comment> comm = Comment.getComments(id);
+		ArrayList<JSONObject> jsonn = new ArrayList<JSONObject>();
+		for (int i = 0; i < comm.size(); i++) {
+			JSONObject jso = new JSONObject();
+			Comment comment = comm.get(i);
+			jso.put("id", comment.getUserID());
+			jso.put("checkinID", comment.getCheckInID());
+			jso.put("userID", comment.getUserID());
+			jso.put("desc", comment.getDesc());
+			jso.put("userName", comment.getUserName());
+			jsonn.add(jso);
+		}
+		JSONObject js = new JSONObject();
+		js.put("comments", jsonn);
+		return js.toJSONString();
+	}
+	
+	
+	
+	
 }
