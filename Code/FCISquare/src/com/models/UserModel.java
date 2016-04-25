@@ -355,6 +355,28 @@ public class UserModel {
 	}
 	//return null;
 }
+    public static String savePlace(int userID,int placeID){
+    	try {
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "Insert into userPlaces(userID,plaseID) values ("+userID+","+placeID+");";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			
+			//stmt.setInt(1, userID);
+			//stmt.setInt(2,placeID);
+			
+			
+			int rs = stmt.executeUpdate(sql);
+			if(rs == 1) {
+				return "done";
+			} else {
+				return "erorr";
+			}
+		       } catch(SQLException e) {
+			        e.printStackTrace();
+			        return "SQL Error";
+		}		
+			
+    }
 
 
 }

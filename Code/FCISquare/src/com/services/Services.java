@@ -1,3 +1,4 @@
+
 package com.services;
 
 import java.sql.Connection;
@@ -398,6 +399,11 @@ public class Services {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String comment(@FormParam("uID") int userID,@FormParam("checkInID") int chID,@FormParam("desc") String desc){
 		String status=Comment.Do(userID, chID,desc);
+		///
+		int ToUserId=Checkin.getUserID(chID);
+		NotificationModel N=new NotificationModel(new CommentAction());
+		N.Notify(ToUserId,chID,userID);
+		///
 		JSONObject json=new JSONObject();
 		json.put("status", status);
 		return json.toJSONString();
@@ -409,6 +415,11 @@ public class Services {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String Like(@FormParam("uID") int userID,@FormParam("checkInID") int chID){
 		String status=Like.Do(userID, chID);
+		///
+		int ToUserId=Checkin.getUserID(chID);
+		NotificationModel N=new NotificationModel(new LikeAction());
+		N.Notify(ToUserId,chID,userID);
+		///
 		JSONObject json=new JSONObject();
 		json.put("status", status);
 		return json.toJSONString();
@@ -429,7 +440,71 @@ public class Services {
 	
 	
 	@POST
-	@Path("/getCommentsForCheckin")
+	@Path("/getMyLikesNotification")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getMyNotification(@FormParam("userID") int uid){
+		ArrayList<Checkin>checkins=new ArrayList();
+		ArrayList<JSONObject> jsonn = new ArrayList<JSONObject>();
+		checkins=NotificationModel.getMyLikeNotification(uid);
+		for(int i=0;i<checkins.size();i++){
+			JSONObject jso = new JSONObject();
+			Checkin checkin = checkins.get(i);
+			jso.put("id",checkin.getId());
+			jso.put("describtion",checkin.getDescription());
+			jso.put("checkintime",checkin.getDate());
+			jso.put("placeID",checkin.getCheckinPlace());
+			jso.put("userID",checkin.getUserID());
+			jso.put("likes",checkin.getLikes());
+			jso.put("comments",checkin.getComments());
+			jsonn.add(jso);
+		}
+		JSONObject js = new JSONObject();
+		js.put("checkins", jsonn);
+		return js.toJSONString();
+		}
+		
+
+	@POST
+	@Path("/getMyCommentsNotification")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getMyCommentsNotification(@FormParam("userID") int uid){
+		ArrayList<Checkin>checkins=new ArrayList();
+		ArrayList<JSONObject> jsonn = new ArrayList<JSONObject>();
+		checkins=NotificationModel.getMyLikeNotification(uid);
+		for(int i=0;i<checkins.size();i++){
+			JSONObject jso = new JSONObject();
+			Checkin checkin = checkins.get(i);
+			jso.put("id",checkin.getId());
+			jso.put("describtion",checkin.getDescription());
+			jso.put("checkintime",checkin.getDate());
+			jso.put("placeID",checkin.getCheckinPlace());
+			jso.put("userID",checkin.getUserID());
+			jso.put("likes",checkin.getLikes());
+			jso.put("comments",checkin.getComments());
+			jsonn.add(jso);
+		}
+		JSONObject js = new JSONObject();
+		js.put("checkins", jsonn);
+		return js.toJSONString();
+		}
+
+
+	@POST
+	@Path("/savePlace")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String saveplace(@FormParam("userID") int uid,@FormParam("placeID") int pid){
+		String status=UserModel.savePlace(uid, pid);
+		JSONObject jso=new JSONObject();
+		jso.put("status",status);
+		
+		return jso.toJSONString();
+	}
+	
+	
+
+
+    @POST
+    @Path("/getCommentsForCheckin")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getcomments(@FormParam("checkinID") int id) {
 		ArrayList<Comment> comm = Comment.getComments(id);
@@ -448,8 +523,19 @@ public class Services {
 		js.put("comments", jsonn);
 		return js.toJSONString();
 	}
+	@POST
+	@Path("/checkLike")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String checkLike(@FormParam("userID") int uid,@FormParam("chinID") int chid){
+		String status=Like.checkLike(uid,chid);
+		JSONObject jso=new JSONObject();
+		jso.put("status",status);
+		
+		return jso.toJSONString();
+	}
 	
 	
 	
 	
 }
+

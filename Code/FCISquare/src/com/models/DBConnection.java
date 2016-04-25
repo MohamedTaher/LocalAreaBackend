@@ -20,7 +20,7 @@ public class DBConnection {
 					+ "user=adminsTycGbN&password=HRA9uN57DX_8&characterEncoding=utf8");*/
 			connection = DriverManager
 					.getConnection("jdbc:mysql://localhost:3306/localArea?"
-							+ "user=root");
+							+ "user=root&password=cinhello");
 			/*
 			connection = DriverManager.getConnection("jdbc:mysql://127.10.183.2:3306/wep?"
 					+ "user=adminsTycGbN&password=HRA9uN57DX_8&characterEncoding=utf8");*/

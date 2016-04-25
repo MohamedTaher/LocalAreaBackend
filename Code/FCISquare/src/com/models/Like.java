@@ -71,5 +71,28 @@ public static String Undo(int userID,int CheckinID){
 		return "SQL error";
 	}
 	//return null;
+
+
 }
+public static String checkLike(int id,int chID){
+	try {
+		Connection conn = DBConnection.getActiveConnection();
+        String sql="SELECT * FROM likes WHERE userID = " + id + " and checkinID = " + chID + ";";
+		PreparedStatement stmt;
+		stmt = conn.prepareStatement(sql);
+		ResultSet rs = stmt.executeQuery(sql);
+		if (rs.next()) {
+			return "ok";
+
+		}
+		return null;
+       }catch (SQLException e) {
+  	// TODO Auto-generated catch block
+	e.printStackTrace();
+	return "sql error";
+}
+	
+}
+
+
 }
