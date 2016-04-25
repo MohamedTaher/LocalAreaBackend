@@ -287,6 +287,8 @@ public class Services {
 		jplace.put("lat", place.getLat());
 		jplace.put("userID", place.getUserID());
 		jplace.put("numberOfCheckins", place.getNumberOfCheckins());
+		jplace.put("rateSum", place.getRateSum());
+		jplace.put("userNum", place.getUserNum());
 		return jplace.toJSONString();
 	}
 	
