@@ -205,4 +205,39 @@ public class Checkin {
 		}
 	}
 	
+
+	public static int getUserID(int checkinId){
+		try {
+			int userid;
+			Connection conn = DBConnection.getActiveConnection();
+			String sql="select userID from checkins where id="+checkinId+";";
+			
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			ResultSet rs = stmt.executeQuery(sql);
+			
+			if(rs.next()){
+			    userid=rs.getInt("userID");
+				return userid;
+			}
+			else {
+				System.out.println("no data");
+				userid=(Integer) null;
+				return userid;
+			}
+			
+			
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		System.out.println("SQL ERROR !!\n");
+		return (Integer) null;
+	}
+	
 }
+}
+
+
+
+	
+	

@@ -1,3 +1,4 @@
+
 package com.services;
 
 import java.sql.Connection;
@@ -396,6 +397,11 @@ public class Services {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String comment(@FormParam("uID") int userID,@FormParam("checkInID") int chID,@FormParam("desc") String desc){
 		String status=Comment.Do(userID, chID,desc);
+		///
+		int ToUserId=Checkin.getUserID(chID);
+		NotificationModel N=new NotificationModel(new CommentAction());
+		N.Notify(ToUserId,chID,userID);
+		///
 		JSONObject json=new JSONObject();
 		json.put("status", status);
 		return json.toJSONString();
@@ -407,6 +413,11 @@ public class Services {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String Like(@FormParam("uID") int userID,@FormParam("checkInID") int chID){
 		String status=Like.Do(userID, chID);
+		///
+		int ToUserId=Checkin.getUserID(chID);
+		NotificationModel N=new NotificationModel(new LikeAction());
+		N.Notify(ToUserId,chID,userID);
+		///
 		JSONObject json=new JSONObject();
 		json.put("status", status);
 		return json.toJSONString();
@@ -427,7 +438,43 @@ public class Services {
 	
 	
 	@POST
-	@Path("/getCommentsForCheckin")
+	@Path("/getMyLikesNotification")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getMyNotification(@FormParam("userID") int uid){
+		String status=NotificationModel.getMyLikeNotification(uid);
+		JSONObject jso=new JSONObject();
+		jso.put("status",status);
+		
+		return jso.toJSONString();
+	}
+	@POST
+	@Path("/getMyCommentsNotification")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getMyCommentsNotification(@FormParam("userID") int uid){
+		String status=NotificationModel.getMyCommentsNotification(uid);
+		JSONObject jso=new JSONObject();
+		jso.put("status",status);
+		
+		return jso.toJSONString();
+	}
+
+
+	@POST
+	@Path("/savePlace")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String saveplace(@FormParam("userID") int uid,@FormParam("placeID") int pid){
+		String status=UserModel.savePlace(uid, pid);
+		JSONObject jso=new JSONObject();
+		jso.put("status",status);
+		
+		return jso.toJSONString();
+	}
+	
+	
+
+
+    @POST
+    @Path("/getCommentsForCheckin")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getcomments(@FormParam("checkinID") int id) {
 		ArrayList<Comment> comm = Comment.getComments(id);
@@ -446,8 +493,19 @@ public class Services {
 		js.put("comments", jsonn);
 		return js.toJSONString();
 	}
+	@POST
+	@Path("/checkLike")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String checkLike(@FormParam("userID") int uid,@FormParam("chinID") int chid){
+		String status=Like.checkLike(uid,chid);
+		JSONObject jso=new JSONObject();
+		jso.put("status",status);
+		
+		return jso.toJSONString();
+	}
 	
 	
 	
 	
 }
+
