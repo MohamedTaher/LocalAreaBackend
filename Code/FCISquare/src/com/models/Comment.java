@@ -50,27 +50,33 @@ public class Comment {
 	
 	public static String Do(int userID,int CheckinID,String desc){
 		try {
-			int id=6;
+//			int id=6;
 			Connection conn = DBConnection.getActiveConnection();
 			String sql = "Insert into comments (userID,checkinID,description) VALUES  ("+userID+","+CheckinID+",'"+desc+"');";
-			System.out.println(sql);
+//			System.out.println(sql);
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			//stmt.setString(4, desc);
 			stmt.executeUpdate();
 			ResultSet res=stmt.getGeneratedKeys();
 			if(res.next()){
-				return "done";
+				sql = "select * from comments where userID="+userID+" and checkinID="+CheckinID+" and description='"+desc+"';";
+				Connection con = DBConnection.getActiveConnection();
+				PreparedStatement stmt2 = con.prepareStatement(sql);
+				stmt2.executeQuery(sql);
+				ResultSet rs = stmt.getResultSet();
+				rs = stmt2.getResultSet();
+				if(rs.next()) {
+					return rs.getInt("id") + "";
+				}
+				return "Error";
 			}
-			
-			
-			
 		}catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return "SQL error";
+			return "SQL Error";
 		}
-		return "done";
+		return "Error";
 	}
 	
 	public static String UnDo(int commentID){
