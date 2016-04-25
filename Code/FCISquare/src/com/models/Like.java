@@ -28,7 +28,7 @@ public int getuserID(){
 public static String Do(int userID,int CheckinID){
 	try {
 		Connection conn = DBConnection.getActiveConnection();
-		String sql = "Insert into likeModels (userID,checkinID) VALUES  ("+userID+","+CheckinID+")";
+		String sql = "Insert into likes (userID,checkinID) VALUES  ("+userID+","+CheckinID+")";
 		System.out.println(sql);
 		PreparedStatement stmt;
 		stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -77,7 +77,7 @@ public static String Undo(int userID,int CheckinID){
 public static String checkLike(int id,int chID){
 	try {
 		Connection conn = DBConnection.getActiveConnection();
-        String sql="SELECT * FROM likeModels WHERE userID = " + id + " and checkinID = " + chID + ";";
+        String sql="SELECT * FROM likes WHERE userID = " + id + " and checkinID = " + chID + ";";
 		PreparedStatement stmt;
 		stmt = conn.prepareStatement(sql);
 		ResultSet rs = stmt.executeQuery(sql);

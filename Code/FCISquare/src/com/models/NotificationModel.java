@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class NotificationModel {
 	
@@ -18,53 +19,60 @@ public class NotificationModel {
 		ob.Notify(TO,chID,from);
 	}
 	
-   public static String getMyLikeNotification(int id){
+   public static ArrayList<Checkin> getMyLikeNotification(int id){
 	   try {
+		    ArrayList<Checkin>checkins=new ArrayList();
+		    Checkin checkin;
+		    int fromid,chinid;
 			Connection conn = DBConnection.getActiveConnection();
             String sql="Select * from likeNotefication where toUserID=" + id +";";
 			PreparedStatement stmt;
 			String s="";
-			int fromid;
-			
 			stmt = conn.prepareStatement(sql);
-			//stmt.setString(1, id+"");
-			//stmt.executeUpdate();
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				 id= rs.getInt("fromUserID");
-				 s+=id+"Like your checkin number";
+				fromid= rs.getInt("fromUserID");
+				chinid= rs.getInt("chINID");
+				checkin=Checkin.getCheckinByID(chinid);
+				checkins.add(checkin);
+				
+				 s+=fromid+"Like your checkin number"+checkin;
 				 
 			}
-			return s;
+			return checkins;
 	       }catch (SQLException e) {
 	  	// TODO Auto-generated catch block
 		e.printStackTrace();
+		System.out.println("errrrrrrrrrrrror");
 		return null;
 	}
 	   
    }
 	
-   public static String getMyCommentsNotification(int id){
+   public static ArrayList<Checkin> getMyCommentsNotification(int id){
 	   try {
+		    ArrayList<Checkin>checkins=new ArrayList();
+		    Checkin checkin;
+		    int fromid,chinid;
 			Connection conn = DBConnection.getActiveConnection();
             String sql="Select * from commentNotefication where toUserID=" + id +";";
 			PreparedStatement stmt;
 			String s="";
-			int fromid;
-			
 			stmt = conn.prepareStatement(sql);
-			//stmt.setString(1, id+"");
-			//stmt.executeUpdate();
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				 id= rs.getInt("fromUserID");
-				 s+=id+"comment in your checkin";
+				fromid= rs.getInt("fromUserID");
+				chinid= rs.getInt("chINID");
+				checkin=Checkin.getCheckinByID(chinid);
+				checkins.add(checkin);
+				s+=fromid+"comment on your checkin number"+checkin;
 				 
 			}
-			return s;
+			return checkins;
 	       }catch (SQLException e) {
 	  	// TODO Auto-generated catch block
 		e.printStackTrace();
+		System.out.println("errrrrrrrrrrrror");
 		return null;
 	}
 	   

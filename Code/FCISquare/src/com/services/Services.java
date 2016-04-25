@@ -441,22 +441,50 @@ public class Services {
 	@Path("/getMyLikesNotification")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getMyNotification(@FormParam("userID") int uid){
-		String status=NotificationModel.getMyLikeNotification(uid);
-		JSONObject jso=new JSONObject();
-		jso.put("status",status);
+		ArrayList<Checkin>checkins=new ArrayList();
+		ArrayList<JSONObject> jsonn = new ArrayList<JSONObject>();
+		checkins=NotificationModel.getMyLikeNotification(uid);
+		for(int i=0;i<checkins.size();i++){
+			JSONObject jso = new JSONObject();
+			Checkin checkin = checkins.get(i);
+			jso.put("id",checkin.getId());
+			jso.put("describtion",checkin.getDescription());
+			jso.put("checkintime",checkin.getDate());
+			jso.put("placeID",checkin.getCheckinPlace());
+			jso.put("userID",checkin.getUserID());
+			jso.put("likes",checkin.getLikes());
+			jso.put("comments",checkin.getComments());
+			jsonn.add(jso);
+		}
+		JSONObject js = new JSONObject();
+		js.put("checkins", jsonn);
+		return js.toJSONString();
+		}
 		
-		return jso.toJSONString();
-	}
+
 	@POST
 	@Path("/getMyCommentsNotification")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getMyCommentsNotification(@FormParam("userID") int uid){
-		String status=NotificationModel.getMyCommentsNotification(uid);
-		JSONObject jso=new JSONObject();
-		jso.put("status",status);
-		
-		return jso.toJSONString();
-	}
+		ArrayList<Checkin>checkins=new ArrayList();
+		ArrayList<JSONObject> jsonn = new ArrayList<JSONObject>();
+		checkins=NotificationModel.getMyLikeNotification(uid);
+		for(int i=0;i<checkins.size();i++){
+			JSONObject jso = new JSONObject();
+			Checkin checkin = checkins.get(i);
+			jso.put("id",checkin.getId());
+			jso.put("describtion",checkin.getDescription());
+			jso.put("checkintime",checkin.getDate());
+			jso.put("placeID",checkin.getCheckinPlace());
+			jso.put("userID",checkin.getUserID());
+			jso.put("likes",checkin.getLikes());
+			jso.put("comments",checkin.getComments());
+			jsonn.add(jso);
+		}
+		JSONObject js = new JSONObject();
+		js.put("checkins", jsonn);
+		return js.toJSONString();
+		}
 
 
 	@POST
