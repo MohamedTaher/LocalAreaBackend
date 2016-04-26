@@ -71,9 +71,10 @@ public static String Undo(int userID,int CheckinID){
 		return "SQL error";
 	}
 	//return null;
-
-
 }
+
+
+
 public static String checkLike(int id,int chID){
 	try {
 		Connection conn = DBConnection.getActiveConnection();
@@ -91,8 +92,4 @@ public static String checkLike(int id,int chID){
 	e.printStackTrace();
 	return "sql error";
 }
-	
-}
-
-
 }

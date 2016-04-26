@@ -88,8 +88,8 @@ public class Checkin {
 		String temp = "";
 		try {
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "Insert into checkins (description,checkintime,userID,placeID,likes,comments)"
-					+ "VALUES  ('"+description+"',"+date+","+userID+","+placeID+",0,0);";
+			String sql = "Insert into checkins (description,checkintime,userID,placeID)"
+					+ "VALUES  ('"+description+"',"+date+","+userID+","+placeID+");";
 			temp += sql;
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql);
@@ -172,6 +172,7 @@ public class Checkin {
 				checkin.setDescription(rs.getString("description"));
 				checkin.setDate(rs.getString("checkintime"));
 				checkin.setPlaceID(rs.getInt("placeID"));
+				checkin.setUserID(rs.getInt("userID"));
 				checkin.setCheckinPlace(PlaceModel.getPlaceByID(checkin.getPlaceID()));
 				return checkin;
 			}
@@ -205,39 +206,7 @@ public class Checkin {
 		}
 	}
 	
-
-	public static int getUserID(int checkinId){
-		try {
-			int userid;
-			Connection conn = DBConnection.getActiveConnection();
-			String sql="select userID from checkins where id="+checkinId+";";
-			
-			PreparedStatement stmt;
-			stmt = conn.prepareStatement(sql);
-			ResultSet rs = stmt.executeQuery(sql);
-			
-			if(rs.next()){
-			    userid=rs.getInt("userID");
-				return userid;
-			}
-			else {
-				System.out.println("no data");
-				userid=(Integer) null;
-				return userid;
-			}
-			
-			
-	} catch (SQLException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-		System.out.println("SQL ERROR !!\n");
-		return (Integer) null;
-	}
+	
+	
 	
 }
-}
-
-
-
-	
-	

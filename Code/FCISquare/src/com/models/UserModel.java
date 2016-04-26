@@ -355,7 +355,8 @@ public class UserModel {
 	}
 	//return null;
 }
-    public static String savePlace(int userID,int placeID){
+
+public static String savePlace(int userID,int placeID){
     	try {
 			Connection conn = DBConnection.getActiveConnection();
 			String sql = "Insert into userPlaces(userID,plaseID) values ("+userID+","+placeID+");";
@@ -377,6 +378,4 @@ public class UserModel {
 		}		
 			
     }
-
-
 }
