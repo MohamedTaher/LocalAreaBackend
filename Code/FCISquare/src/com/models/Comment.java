@@ -52,11 +52,8 @@ public class Comment {
 		try {
 //			int id=6;
 			Connection conn = DBConnection.getActiveConnection();
-
-
 			String sql = "Insert into comments (userID,checkinID,description) VALUES  ("+userID+","+CheckinID+",'"+desc+"');";
 //			System.out.println(sql);
-
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			//stmt.setString(4, desc);
@@ -77,7 +74,7 @@ public class Comment {
 		}catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return "SQL Error";
+			return "Error";
 		}
 		return "Error";
 	}
