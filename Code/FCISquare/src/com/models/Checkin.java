@@ -88,8 +88,8 @@ public class Checkin {
 		String temp = "";
 		try {
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "Insert into checkins (description,checkintime,userID,placeID)"
-					+ "VALUES  ('"+description+"',"+date+","+userID+","+placeID+");";
+			String sql = "Insert into checkins (description,checkintime,userID,placeID,likes,comments)"
+					+ "VALUES  ('"+description+"',"+date+","+userID+","+placeID+",0,0);";
 			temp += sql;
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql);
