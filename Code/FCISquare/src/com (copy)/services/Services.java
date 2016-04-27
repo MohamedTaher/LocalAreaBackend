@@ -18,7 +18,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.server.mvc.Viewable;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.models.*;
@@ -655,32 +654,6 @@ public class Services {
 		else{js.put("status", "error");}
 		return js.toJSONString();
 		
-	}
-
-	@POST
-	@Path("/getSavedPlacesList")
-	public String getSavedPlacesList(@FormParam("userID")int userID) {
-		JSONObject res = new JSONObject();
-		// ArrayList<JSONObject> jplaces = new ArrayList<>();
-		ArrayList<PlaceModel> places = PlaceModel.getSavedPlacesList(userID);
-		JSONArray jplaces = new JSONArray();
-		for(int i = 0;i < places.size();i++) {
-			JSONObject jplace = new JSONObject();
-			PlaceModel tmp = places.get(i);
-			jplace.put("id", tmp.getId());
-			jplace.put("name", tmp.getName());
-			jplace.put("description", tmp.getDescription());
-			jplace.put("lng", tmp.getLng());
-			jplace.put("lat", tmp.getLat());
-			jplace.put("userID", tmp.getUserID());
-			jplace.put("numberOfCheckins", tmp.getNumberOfCheckins());
-			jplace.put("rateSum", tmp.getRateSum());
-			jplace.put("userNum", tmp.getUserNum());
-			// jplaces.add(jplace);
-			jplaces.add(jplace);
-		}
-		res.put("places", jplaces);
-		return res.toJSONString();
 	}
 	
 	

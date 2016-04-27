@@ -265,32 +265,4 @@ public class PlaceModel {
 		}
 	}
 
-	public static ArrayList<PlaceModel> getSavedPlacesList(int userID) {
-		ArrayList<PlaceModel> ret = new ArrayList<PlaceModel>();
-		try {
-			Connection con = DBConnection.getActiveConnection();
-			String sql = "select * from userPlaces, places where userPlaces.userID=" + userID + " and userPlaces.plaseID=id;";
-			PreparedStatement stmt;
-			stmt = con.prepareStatement(sql);
-			ResultSet rs = stmt.executeQuery();
-			while(rs.next()) {
-				PlaceModel place = new PlaceModel();
-				place.setId(rs.getInt("id"));
-				place.setName(rs.getString("name"));
-				place.setDescription(rs.getString("description"));
-				place.setLat(rs.getDouble("lat"));
-				place.setLng(rs.getDouble("lng"));
-				place.setUserID(rs.getInt("userID"));
-				place.setNumberOfCheckins(rs.getInt("numberOfCheckins"));
-				place.setRateSum(rs.getInt("rateSum"));
-				place.setUserNum(rs.getInt("userNum"));
-				ret.add(place);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return ret;
-	}
-
 }

@@ -18,12 +18,12 @@ public class DBConnection {
 							+ "user=adminYKFs38v&password=QG9RmdNVFgmc&characterEncoding=utf8");*/
 			/*connection = DriverManager.getConnection("jdbc:mysql://127.10.183.2:3306/wep?"
 					+ "user=adminsTycGbN&password=HRA9uN57DX_8&characterEncoding=utf8");*/
-//			connection = DriverManager
-//					.getConnection("jdbc:mysql://localhost:3306/localArea?"
-//							+ "user=root");
-//			/*
-			connection = DriverManager.getConnection("jdbc:mysql://127.10.183.2:3306/wep?"
-					+ "user=adminsTycGbN&password=HRA9uN57DX_8&characterEncoding=utf8");
+			connection = DriverManager
+					.getConnection("jdbc:mysql://localhost:3306/localArea?"
+						+ "user=root&password=cinhello");
+			
+			//connection = DriverManager.getConnection("jdbc:mysql://127.10.183.2:3306/wep?"
+				//	+ "user=adminsTycGbN&password=HRA9uN57DX_8&characterEncoding=utf8");
 			
 			return connection;
 		} catch (ClassNotFoundException e) {

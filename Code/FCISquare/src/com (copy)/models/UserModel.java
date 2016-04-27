@@ -14,21 +14,23 @@ import com.mysql.jdbc.Statement;
 
 public class UserModel {
 
+	
 	private String name;
 	private String email;
 	private String pass;
 	private Integer id;
 	private Double lat;
 	private Double lon;
-
-	public String getPass() {
+	
+	
+	public String getPass(){
 		return pass;
 	}
-
-	public void setPass(String pass) {
+	
+	public void setPass(String pass){
 		this.pass = pass;
 	}
-
+	
 	public String getName() {
 		return name;
 	}
@@ -73,6 +75,7 @@ public class UserModel {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
 			String sql = "Insert into users (`name`,`email`,`password`) VALUES  (?,?,?)";
+		    
 
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -99,6 +102,8 @@ public class UserModel {
 		return null;
 	}
 
+	
+	
 	public static UserModel login(String email, String pass) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
@@ -127,7 +132,7 @@ public class UserModel {
 	}
 
 	public static boolean updateUserPosition(Integer id, Double lat, Double lon) {
-		try {
+		try{
 			Connection conn = DBConnection.getActiveConnection();
 			String sql = "Update users set lat = ? , long = ? where id = ?";
 			PreparedStatement stmt;
@@ -137,19 +142,19 @@ public class UserModel {
 			stmt.setInt(3, id);
 			stmt.executeUpdate();
 			return true;
-		} catch (SQLException e) {
+		}catch(SQLException e){
 			e.printStackTrace();
 		}
 		return false;
 	}
-
+	
 	public static UserModel getPosition(String email) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "Select * from users where email ='" + email + "';";
+			String sql = "Select * from users where email ='" +email + "';";
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql);
-			// stmt.setString(1, email);
+//			stmt.setString(1, email);
 			ResultSet rs = stmt.executeQuery(sql);
 			if (rs.next()) {
 				UserModel user = new UserModel();
@@ -169,15 +174,17 @@ public class UserModel {
 		return null;
 	}
 
+	
+	
 	public static Integer emailToID(String email) {
 		try {
 			Connection con = DBConnection.getActiveConnection();
-			String sql = "select id from users where email='" + email + "';";
+			String sql = "select id from users where email='" + email+"';";
 			PreparedStatement stmt;
 			stmt = con.prepareStatement(sql);
-			// stmt.setString(1, email);
+//			stmt.setString(1, email);
 			ResultSet rs = stmt.executeQuery(sql);
-			if (rs.next()) {
+			if(rs.next()) {
 				return Integer.parseInt(rs.getString("id"));
 			}
 		} catch (SQLException e) {
@@ -186,71 +193,73 @@ public class UserModel {
 		}
 		return 0;
 	}
-
+	
+	
 	public static String follow(Integer followerID, String followedEmail) {
 		try {
 			Integer followedID = emailToID(followedEmail);
 			Connection con = DBConnection.getActiveConnection();
-			String sql = "INSERT INTO follow VALUES(" + followerID + ", "
-					+ followedID + ");";
+			String sql = "INSERT INTO follow VALUES("+followerID+", "+followedID+");";
 			PreparedStatement stmt = con.prepareStatement(sql);
-			// stmt.setInt(1, followerID);
-			// stmt.setInt(2, followedID);
+//			stmt.setInt(1, followerID);
+//			stmt.setInt(2, followedID);
 			int rs = stmt.executeUpdate(sql);
-			if (rs == 1) {
+			if(rs == 1) {
 				return "OK";
 			} else {
 				return "NO";
 			}
-		} catch (SQLException e) {
+		} catch(SQLException e) {
 			e.printStackTrace();
 			return "SQL Error";
 		}
 	}
 
+	
+	
 	public static String unfollow(Integer followerID, String followedEmail) {
 		try {
 			Integer followedID = emailToID(followedEmail);
 			Connection con = DBConnection.getActiveConnection();
-			// DELETE FROM follow where follower = ? and followedID = ?;
-			String sql = "DELETE FROM follow WHERE follower = " + followerID
-					+ " and followed = " + followedID + ";";
+			//DELETE FROM follow where follower = ? and followedID = ?;
+			String sql = "DELETE FROM follow WHERE follower = " + followerID + " and followed = " + followedID + ";";
 			PreparedStatement stmt = con.prepareStatement(sql);
-			// stmt.setInt(1, (int)followerID);
-			// stmt.setInt(2, (int)followedID);
+//			stmt.setInt(1, (int)followerID);
+//			stmt.setInt(2, (int)followedID);
 			System.out.println(stmt.toString());
 			int state = stmt.executeUpdate(sql);
 			System.out.println("state " + state);
-			// ResultSet rs = stmt.executeQuery();
-			// System.out.println(rs.toString());
-			if (state != 0) {
+//			ResultSet rs = stmt.executeQuery();
+//			System.out.println(rs.toString());
+			if(state != 0) {
 				return "OK";
 			} else {
 				return "NO";
 			}
-		} catch (SQLException e) {
+		} catch(SQLException e) {
 			e.printStackTrace();
-			// Integer followedID = emailToID(followedEmail);
-			// System.out.println(followedID + " " + followedEmail);
+//			Integer followedID = emailToID(followedEmail);
+//			System.out.println(followedID  + " " + followedEmail);
 			return "SQL Error";
 		}
 	}
-
-	public static ArrayList<UserModel> Getfollowers(String id) {
-		ArrayList<UserModel> follwers = new ArrayList<UserModel>();
+	
+	
+        public static ArrayList<UserModel> Getfollowers(String id) {
+		ArrayList<UserModel> follwers=new ArrayList<UserModel>();
 		try {
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "Select * from follow where `followed` = " + id;// /
+			String sql = "Select * from follow where `followed` = "+id;///
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql);
-			// stmt.setString(1, id);
+//			stmt.setString(1, id);
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				UserModel user = new UserModel();
 				user.id = rs.getInt(1);
-				// user.email = rs.getString("email");
+				//user.email = rs.getString("email");
 				follwers.add(user);
-
+				
 			}
 			return follwers;
 		} catch (SQLException e) {
@@ -259,44 +268,50 @@ public class UserModel {
 		}
 		return null;
 	}
+        
+//    public static ArrayList<UserModel> Getmyfollowers(String id) {
+//		ArrayList<UserModel> follwers=new ArrayList<UserModel>();
+//		try {
+//			Connection conn = DBConnection.getActiveConnection();
+//			String sql = "Select * from follow where `follower` = "+id;///
+//			PreparedStatement stmt;
+//			stmt = conn.prepareStatement(sql);
+////			stmt.setString(1, id);
+//			ResultSet rs = stmt.executeQuery(sql);
+//			while (rs.next()) {
+//				UserModel user = new UserModel();
+//				user.id = rs.getInt(1);
+//				//user.email = rs.getString("email");
+//				follwers.add(user);
+//				
+//			}
+//			return follwers;
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
+        
+    
 
-	// public static ArrayList<UserModel> Getmyfollowers(String id) {
-	// ArrayList<UserModel> follwers=new ArrayList<UserModel>();
-	// try {
-	// Connection conn = DBConnection.getActiveConnection();
-	// String sql = "Select * from follow where `follower` = "+id;///
-	// PreparedStatement stmt;
-	// stmt = conn.prepareStatement(sql);
-	// // stmt.setString(1, id);
-	// ResultSet rs = stmt.executeQuery(sql);
-	// while (rs.next()) {
-	// UserModel user = new UserModel();
-	// user.id = rs.getInt(1);
-	// //user.email = rs.getString("email");
-	// follwers.add(user);
-	//
-	// }
-	// return follwers;
-	// } catch (SQLException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	// return null;
-	// }
 
-	public static UserModel search(int id) {
+	
+	
+
+	public static UserModel  search(int id){
 		try {
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "Select * from users where id=" + id + ";";
+            String sql="Select * from users where id=" + id +";";
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql);
-			// stmt.setString(1, id+"");
-			// stmt.executeUpdate();
+			//stmt.setString(1, id+"");
+			//stmt.executeUpdate();
 			ResultSet rs = stmt.executeQuery(sql);
 			if (rs.next()) {
 				UserModel user = new UserModel();
 				user.id = rs.getInt(1);
-				user.email = rs.getString("email");
+				user.email =rs.getString("email");
 				user.pass = null;
 				user.name = rs.getString("name");
 				user.lat = rs.getDouble("lat");
@@ -304,69 +319,63 @@ public class UserModel {
 				return user;
 			}
 			return null;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-
+	       }catch (SQLException e) {
+	  	// TODO Auto-generated catch block
+		e.printStackTrace();
+		return null;
 	}
+		
+	}
+    public static ArrayList<UserModel> searchByName(String name) {
+	ArrayList<UserModel> users=new ArrayList<UserModel>();
+	try {
+		Connection conn = DBConnection.getActiveConnection();
+		String sql = "Select * from users where name ='"+name+"';";
+		PreparedStatement stmt;
+		stmt = conn.prepareStatement(sql);
+		//stmt.setString(1, name);
+		ResultSet rs = stmt.executeQuery(sql);
+		while (rs.next()) {
+			UserModel user = new UserModel();
+			user.id = rs.getInt("id");
+			user.email = rs.getString("email");
+			user.name=rs.getString("name");
+			user.lat = rs.getDouble("lat");
+			user.lon = rs.getDouble("long");
+			
+			
+			users.add(user);
+			
+		}
+		return users;
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		return null;
+	}
+	//return null;
+}
 
-	public static ArrayList<UserModel> searchByName(String name) {
-		ArrayList<UserModel> users = new ArrayList<UserModel>();
-		try {
+public static String savePlace(int userID,int placeID){
+    	try {
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "Select * from users where name ='" + name + "';";
-			PreparedStatement stmt;
-			stmt = conn.prepareStatement(sql);
-			// stmt.setString(1, name);
-			ResultSet rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				UserModel user = new UserModel();
-				user.id = rs.getInt("id");
-				user.email = rs.getString("email");
-				user.name = rs.getString("name");
-				user.lat = rs.getDouble("lat");
-				user.lon = rs.getDouble("long");
-
-				users.add(user);
-
+			String sql = "Insert into userPlaces(userID,plaseID) values ("+userID+","+placeID+");";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			
+			//stmt.setInt(1, userID);
+			//stmt.setInt(2,placeID);
+			
+			
+			int rs = stmt.executeUpdate(sql);
+			if(rs == 1) {
+				return "done";
+			} else {
+				return "erorr";
 			}
-			return users;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-		// return null;
-	}
-
-	public static String savePlace(int userID, int placeID) {
-		try {
-			Connection conn = DBConnection.getActiveConnection();
-			String sql = "select * from userPlaces where userID=" + userID+ " and plaseID=" + placeID + ";";
-			PreparedStatement ps = conn.prepareStatement(sql);
-			ResultSet rss = ps.executeQuery(sql);
-			if (!rss.next()) {
-				sql = "Insert into userPlaces(userID,plaseID) values ("+ userID + "," + placeID + ");";
-				// String sql =
-				// "insert ignore into userPlaces set userID="+userID+" plaseID="+placeID+";";
-				PreparedStatement stmt = conn.prepareStatement(sql);
-
-				// stmt.setInt(1, userID);
-				// stmt.setInt(2,placeID);
-
-				int rs = stmt.executeUpdate(sql);
-				if (rs == 1) {
-					return "done";
-				} else {
-					return "erorr";
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return "SQL Error";
-		}
-		return "done";
-	}
+		       } catch(SQLException e) {
+			        e.printStackTrace();
+			        return "SQL Error";
+		}		
+			
+    }
 }
