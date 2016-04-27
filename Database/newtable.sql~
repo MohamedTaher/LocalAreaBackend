@@ -52,20 +52,7 @@ add foreign key(fromUserID) references users(id);
 
 alter table commentNotefication
 add foreign key(chINID) references checkins(id);
-//////////////////////////////////////////////
-create table actions(
 
-userid int(11),
-checkinid int(11),
-type varchar(50)
-
-);
-alter table actions
-add foreign key(userid) references users(id);
-
-
-alter table actions
-add foreign key(checkinid) references checkins(id);
 
 
 

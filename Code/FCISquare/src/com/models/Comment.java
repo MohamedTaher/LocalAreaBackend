@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import com.mysql.jdbc.Statement;
 
-public class Comment {
+public class Comment  implements UserAction{
 	int checkInID;
 	int userID;
 	int id;
@@ -79,10 +79,11 @@ public class Comment {
 		return "Error";
 	}
 	
-	public static String UnDo(int commentID){
+	public  String Undo(int userID,int checkinID,String type){
 		try {
+			ActionModel.removeAction(userID, checkinID, type);
 			Connection con = DBConnection.getActiveConnection();
-			String sql = "DELETE FROM comments WHERE id = " + commentID +";";
+			String sql = "DELETE FROM comments WHERE userID = " + userID +"and checkinID = "+checkinID+";";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			//stmt.setInt(1, userID);
 			//stmt.setInt(2, CheckinID);

@@ -376,6 +376,8 @@ public class Services {
 			@FormParam("placeID") String placeID) {
 		String state = Checkin.createCheckin(description, Integer.parseInt(userID)
 				, Integer.parseInt(placeID));
+		
+		ActionModel.addAction(Integer.parseInt(userID),Checkin.id,"Checkin" );
 
 		JSONObject json=new JSONObject();
 		json.put("status", state);
@@ -398,6 +400,12 @@ public class Services {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String comment(@FormParam("uID") int userID,@FormParam("checkInID") int chID,@FormParam("desc") String desc){
 		String status=Comment.Do(userID, chID,desc);
+		ActionModel.addAction(userID,chID,"Comment");
+		///
+		int ToUserId=Checkin.getUserID(chID);
+		NotificationModel N=new NotificationModel(new CommentAction());
+		N.Notify(ToUserId,chID,userID);
+		///
 		JSONObject json=new JSONObject();
 		json.put("status", status);
 		return json.toJSONString();
@@ -409,6 +417,12 @@ public class Services {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String Like(@FormParam("uID") int userID,@FormParam("checkInID") int chID){
 		String status=Like.Do(userID, chID);
+		ActionModel.addAction(userID,chID,"Like");
+		///
+		int ToUserId=Checkin.getUserID(chID);
+		NotificationModel N=new NotificationModel(new LikeAction());
+		N.Notify(ToUserId,chID,userID);
+		///
 		JSONObject json=new JSONObject();
 		json.put("status", status);
 		return json.toJSONString();
@@ -420,7 +434,8 @@ public class Services {
 	@Path("/UnLike")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String UnLike(@FormParam("uID") int userID,@FormParam("checkInID") int chID){
-		String status=Like.Undo(userID, chID);
+		Like l = new Like();
+		String status=l.Undo(userID, chID,"Like");
 		JSONObject json=new JSONObject();
 		json.put("status", status);
 		return json.toJSONString();
@@ -484,20 +499,40 @@ public class Services {
 	@Path("/getMyCommentsNotification")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getMyCommentsNotification(@FormParam("userID") int uid){
-		ArrayList<Checkin>checkins=new ArrayList();
+		ArrayList<ArrayList<Integer>> result=new ArrayList();
+		ArrayList<Integer>checkins=new ArrayList();
+		ArrayList<Integer>fromids=new ArrayList();
 		ArrayList<JSONObject> jsonn = new ArrayList<JSONObject>();
-		checkins=NotificationModel.getMyLikeNotification(uid);
+		result=NotificationModel.getMyCommentsNotification(uid);
+		checkins=result.get(0);
+		fromids=result.get(1);
 		for(int i=0;i<checkins.size();i++){
-			JSONObject jso = new JSONObject();
-			Checkin checkin = checkins.get(i);
-			jso.put("id",checkin.getId());
-			jso.put("describtion",checkin.getDescription());
-			jso.put("checkintime",checkin.getDate());
-			jso.put("placeID",checkin.getCheckinPlace());
-			jso.put("userID",checkin.getUserID());
-			jso.put("likes",checkin.getLikes());
-			jso.put("comments",checkin.getComments());
-			jsonn.add(jso);
+			JSONObject jcheckin = new JSONObject();
+			int checkinID=checkins.get(i);
+			int fromid=fromids.get(i);
+			UserModel username=UserModel.search(fromid);
+			String userName=username.getName();
+			Checkin checkintemp =Checkin.getCheckinByID(checkinID);
+			jcheckin.put("description", checkintemp.getDescription());
+			jcheckin.put("date", checkintemp.getDate());
+			jcheckin.put("placeID", checkintemp.getPlaceID());
+			jcheckin.put("userID", checkintemp.getUserID());
+			jcheckin.put("id", checkintemp.getId());
+			jcheckin.put("likes", checkintemp.getLikes());
+			jcheckin.put("comments", checkintemp.getComments());
+			jcheckin.put("pid", checkintemp.getCheckinPlace().getId());
+			jcheckin.put("pname", checkintemp.getCheckinPlace().getName());
+			jcheckin.put("pdescription", checkintemp.getCheckinPlace().getDescription());
+			jcheckin.put("plng", checkintemp.getCheckinPlace().getLng());
+			jcheckin.put("plat", checkintemp.getCheckinPlace().getLat());
+			jcheckin.put("puserid", checkintemp.getCheckinPlace().getUserID());
+			jcheckin.put("pnumberofcheckins", checkintemp.getCheckinPlace().getNumberOfCheckins());
+			jcheckin.put("prateSum", checkintemp.getCheckinPlace().getRateSum());
+			jcheckin.put("pusernum", checkintemp.getCheckinPlace().getUserNum());
+			UserModel user = UserModel.search(checkintemp.getUserID());
+			jcheckin.put("uname", user.getName());
+			jcheckin.put("userNameAction",userName);
+			jsonn.add(jcheckin);
 		}
 		JSONObject js = new JSONObject();
 		js.put("checkins", jsonn);
@@ -508,39 +543,116 @@ public class Services {
 
 	///////////////////////////////
 
-
 	@POST
 	@Path("/getMyLikesNotification")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String getMyNotification(@FormParam("userID") int uid){
-		ArrayList<Checkin>checkins=new ArrayList();
+	public String getMyLikeNotification(@FormParam("userID") int uid){
+		ArrayList<ArrayList<Integer>> result=new ArrayList();
+		ArrayList<Integer>checkins=new ArrayList();
+		ArrayList<Integer>fromids=new ArrayList();
 		ArrayList<JSONObject> jsonn = new ArrayList<JSONObject>();
-		checkins=NotificationModel.getMyLikeNotification(uid);
+		result=NotificationModel.getMyCommentsNotification(uid);
+		checkins=result.get(0);
+		fromids=result.get(1);
 		for(int i=0;i<checkins.size();i++){
-			JSONObject jso = new JSONObject();
-			Checkin checkin = checkins.get(i);
-			jso.put("id",checkin.getId());
-			jso.put("describtion",checkin.getDescription());
-			jso.put("checkintime",checkin.getDate());
-			jso.put("placeID",checkin.getCheckinPlace());
-			jso.put("userID",checkin.getUserID());
-			jso.put("likes",checkin.getLikes());
-			jso.put("comments",checkin.getComments());
-			jsonn.add(jso);
+			JSONObject jcheckin = new JSONObject();
+			int checkinID=checkins.get(i);
+			int fromid=fromids.get(i);
+			UserModel username=UserModel.search(fromid);
+			String userName=username.getName();
+			Checkin checkintemp =Checkin.getCheckinByID(checkinID);
+			jcheckin.put("description", checkintemp.getDescription());
+			jcheckin.put("date", checkintemp.getDate());
+			jcheckin.put("placeID", checkintemp.getPlaceID());
+			jcheckin.put("userID", checkintemp.getUserID());
+			jcheckin.put("id", checkintemp.getId());
+			jcheckin.put("likes", checkintemp.getLikes());
+			jcheckin.put("comments", checkintemp.getComments());
+			jcheckin.put("pid", checkintemp.getCheckinPlace().getId());
+			jcheckin.put("pname", checkintemp.getCheckinPlace().getName());
+			jcheckin.put("pdescription", checkintemp.getCheckinPlace().getDescription());
+			jcheckin.put("plng", checkintemp.getCheckinPlace().getLng());
+			jcheckin.put("plat", checkintemp.getCheckinPlace().getLat());
+			jcheckin.put("puserid", checkintemp.getCheckinPlace().getUserID());
+			jcheckin.put("pnumberofcheckins", checkintemp.getCheckinPlace().getNumberOfCheckins());
+			jcheckin.put("prateSum", checkintemp.getCheckinPlace().getRateSum());
+			jcheckin.put("pusernum", checkintemp.getCheckinPlace().getUserNum());
+			jcheckin.put("userNameAction",userName);
+			
+			jsonn.add(jcheckin);
 		}
 		JSONObject js = new JSONObject();
 		js.put("checkins", jsonn);
 		return js.toJSONString();
 		}
-
-
-
-
-
-
-
-
+	@POST
+	@Path("/getMyActions")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getMyActions(@FormParam("userID") int uid){
+		ArrayList<ArrayList<String>> result=new ArrayList();
+		ArrayList<String>checkins=new ArrayList();
+		ArrayList<String>type=new ArrayList();
+		ArrayList<JSONObject> jsonn = new ArrayList<JSONObject>();
+		result=ActionModel.getMyActions(uid);
+		checkins=result.get(0);
+		type=result.get(1);
+		for(int i=0;i<checkins.size();i++){
+			JSONObject jcheckin = new JSONObject();
+			String checkinID=checkins.get(i);
+			String ty=type.get(i);
+			//UserModel username=UserModel.search(fromid);
+			//String userName=username.getName();
+			Checkin checkintemp =Checkin.getCheckinByID(Integer.parseInt(checkinID));
+			jcheckin.put("description", checkintemp.getDescription());
+			jcheckin.put("date", checkintemp.getDate());
+			jcheckin.put("placeID", checkintemp.getPlaceID());
+			jcheckin.put("userID", checkintemp.getUserID());
+			jcheckin.put("id", checkintemp.getId());
+			jcheckin.put("likes", checkintemp.getLikes());
+			jcheckin.put("comments", checkintemp.getComments());
+			jcheckin.put("pid", checkintemp.getCheckinPlace().getId());
+			jcheckin.put("pname", checkintemp.getCheckinPlace().getName());
+			jcheckin.put("pdescription", checkintemp.getCheckinPlace().getDescription());
+			jcheckin.put("plng", checkintemp.getCheckinPlace().getLng());
+			jcheckin.put("plat", checkintemp.getCheckinPlace().getLat());
+			jcheckin.put("puserid", checkintemp.getCheckinPlace().getUserID());
+			jcheckin.put("pnumberofcheckins", checkintemp.getCheckinPlace().getNumberOfCheckins());
+			jcheckin.put("prateSum", checkintemp.getCheckinPlace().getRateSum());
+			jcheckin.put("pusernum", checkintemp.getCheckinPlace().getUserNum());
+			jcheckin.put("type",ty);
+			
+			jsonn.add(jcheckin);
+		}
+		JSONObject js = new JSONObject();
+		js.put("Actions", jsonn);
+		return js.toJSONString();
+		}
 	
+	@POST
+	@Path("/UndoActions")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String undoActions(@FormParam("type") String type,@FormParam("userID") int uid,@FormParam("chinID") int chid){
+		JSONObject js = new JSONObject();
+		if(type.equals("Like")){
+			ActionModel AC=new ActionModel(new Like());
+			AC.Undo(uid, chid,type);
+			js.put("status", "done");
+		}
+		else if(type.equals("Comments")){
+			ActionModel AC=new ActionModel(new Comment());
+			AC.Undo(uid, chid,type);
+			js.put("status", "done");
+		}
+		else if(type.equals("Checkin")){
+			ActionModel AC=new ActionModel(new Checkin());
+			AC.Undo(uid, chid,type);
+		    js.put("status", "done");
+		
+		}
+		else{js.put("status", "error");}
+		return js.toJSONString();
+		
+	}
 	
 	
 }

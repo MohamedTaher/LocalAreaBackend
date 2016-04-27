@@ -7,12 +7,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class Checkin {
+public class Checkin implements UserAction{
 	private String description;
 	private String date;
 	private int placeID;
 	private int userID;
-	private int id;
+	public static int id;
 	private int likes;
 	private int comments;
 	private PlaceModel checkinPlace;
@@ -197,7 +197,7 @@ public class Checkin {
 			temp += sql;
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql);
-			stmt.executeUpdate(sql);
+			 id=stmt.executeUpdate(sql,PreparedStatement.RETURN_GENERATED_KEYS);
 			return "Success";
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -207,6 +207,65 @@ public class Checkin {
 	}
 	
 	
+	public static int getUserID(int checkinId){
+		try {
+			int userid;
+			Connection conn = DBConnection.getActiveConnection();
+			String sql="select userID from checkins where id="+checkinId+";";
+			
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			ResultSet rs = stmt.executeQuery(sql);
+			
+			if(rs.next()){
+			    userid=rs.getInt("userID");
+				return userid;
+			}
+			else {
+				System.out.println("no data");
+				userid=(Integer) null;
+				return userid;
+			}
+			
+			
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		System.out.println("SQL ERROR !!\n");
+		return (Integer) null;
+	}
+	
+}
+
+	@Override
+	public String Undo(int uID,int id,String type) {
+		try {
+			ActionModel.removeAction(uID, id, type);
+			Connection con = DBConnection.getActiveConnection();
+			String sql = "DELETE FROM checkins WHERE id = " + id +";";
+			
+			PreparedStatement stmt = con.prepareStatement(sql);
+			//stmt.setInt(1, userID);
+			//stmt.setInt(2, CheckinID);
+			//stmt.executeUpdate();
+			//ResultSet res=stmt.getGeneratedKeys();
+			int state = stmt.executeUpdate(sql);
+			if(state != 0) {
+				return "done";
+			} else {
+				return "error";
+			}
+			
+			
+			
+		}catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "SQL error";
+		}
+		//return null;
+
+	}
 	
 	
 }

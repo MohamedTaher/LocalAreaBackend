@@ -19,9 +19,11 @@ public class NotificationModel {
 		ob.Notify(TO,chID,from);
 	}
 	
-   public static ArrayList<Checkin> getMyLikeNotification(int id){
+   public static ArrayList<ArrayList<Integer>> getMyLikeNotification(int id){
 	   try {
-		    ArrayList<Checkin>checkins=new ArrayList();
+		    ArrayList<Integer>checkinsID=new ArrayList();
+		    ArrayList<Integer>fromids=new ArrayList();
+		    ArrayList<ArrayList<Integer>> result=new ArrayList();
 		    Checkin checkin;
 		    int fromid,chinid;
 			Connection conn = DBConnection.getActiveConnection();
@@ -34,12 +36,14 @@ public class NotificationModel {
 				fromid= rs.getInt("fromUserID");
 				chinid= rs.getInt("chINID");
 				checkin=Checkin.getCheckinByID(chinid);
-				checkins.add(checkin);
-				
-				 s+=fromid+"Like your checkin number"+checkin;
+				checkinsID.add(chinid);
+				fromids.add(fromid);
+				s+=fromid+"Like your checkin number"+checkin;
 				 
 			}
-			return checkins;
+			result.add(checkinsID);
+			result.add(fromids);
+			return result;
 	       }catch (SQLException e) {
 	  	// TODO Auto-generated catch block
 		e.printStackTrace();
@@ -49,9 +53,11 @@ public class NotificationModel {
 	   
    }
 	
-   public static ArrayList<Checkin> getMyCommentsNotification(int id){
+   public static ArrayList<ArrayList<Integer>> getMyCommentsNotification(int id){
 	   try {
-		    ArrayList<Checkin>checkins=new ArrayList();
+		    ArrayList<Integer>checkinsID=new ArrayList();
+		    ArrayList<Integer>fromids=new ArrayList();
+		    ArrayList<ArrayList<Integer>> result=new ArrayList();
 		    Checkin checkin;
 		    int fromid,chinid;
 			Connection conn = DBConnection.getActiveConnection();
@@ -64,11 +70,14 @@ public class NotificationModel {
 				fromid= rs.getInt("fromUserID");
 				chinid= rs.getInt("chINID");
 				checkin=Checkin.getCheckinByID(chinid);
-				checkins.add(checkin);
+				checkinsID.add(chinid);
+				fromids.add(fromid);
 				s+=fromid+"comment on your checkin number"+checkin;
 				 
 			}
-			return checkins;
+			result.add(checkinsID);
+			result.add(fromids);
+			return result;
 	       }catch (SQLException e) {
 	  	// TODO Auto-generated catch block
 		e.printStackTrace();
@@ -77,6 +86,5 @@ public class NotificationModel {
 	}
 	   
    }
-   
 
 }

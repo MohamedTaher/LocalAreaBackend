@@ -9,7 +9,7 @@ import org.json.simple.JSONObject;
 
 import com.mysql.jdbc.Statement;
 
-public class Like {
+public  class Like implements UserAction{
 int checkInID;
 int userID;
 
@@ -47,11 +47,14 @@ public static String Do(int userID,int CheckinID){
 	}
 	return "done";
 }
-public static String Undo(int userID,int CheckinID){
+public  String Undo(int userID,int CheckinID,String type){
+	//Undo(id);
 	try {
+		ActionModel.removeAction(userID, CheckinID, type);
 		Connection con = DBConnection.getActiveConnection();
 		String sql = "DELETE FROM likes WHERE userID = " + userID + " and checkinID = " + CheckinID + ";";
 		PreparedStatement stmt = con.prepareStatement(sql);
+		
 		//stmt.setInt(1, userID);
 		//stmt.setInt(2, CheckinID);
 		//stmt.executeUpdate();
@@ -62,15 +65,11 @@ public static String Undo(int userID,int CheckinID){
 		} else {
 			return "error";
 		}
-		
-		
-		
 	}catch (SQLException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 		return "SQL error";
 	}
-	//return null;
 }
 
 
@@ -92,4 +91,7 @@ public static String checkLike(int id,int chID){
 	e.printStackTrace();
 	return "sql error";
 }
-}}
+}
+
+
+}
