@@ -577,6 +577,8 @@ public class Services {
 			jcheckin.put("pnumberofcheckins", checkintemp.getCheckinPlace().getNumberOfCheckins());
 			jcheckin.put("prateSum", checkintemp.getCheckinPlace().getRateSum());
 			jcheckin.put("pusernum", checkintemp.getCheckinPlace().getUserNum());
+			UserModel user = UserModel.search(checkintemp.getUserID());
+			jcheckin.put("uname", user.getName());
 			jcheckin.put("userNameAction",userName);
 			
 			jsonn.add(jcheckin);
