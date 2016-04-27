@@ -623,7 +623,8 @@ public class Services {
 			jcheckin.put("prateSum", checkintemp.getCheckinPlace().getRateSum());
 			jcheckin.put("pusernum", checkintemp.getCheckinPlace().getUserNum());
 			jcheckin.put("type",ty);
-			
+			UserModel user = UserModel.search(checkintemp.getUserID());
+			jcheckin.put("uname", user.getName());
 			jsonn.add(jcheckin);
 		}
 		JSONObject js = new JSONObject();
